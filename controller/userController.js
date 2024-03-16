@@ -135,15 +135,15 @@ checkiftokerexist:(req,res)=>{
 addtobag:(req,res)=>{
     console.log(req.body)
  let q = ""
-    jwt.verify(req.body.token,process.env.JWT_KEY,(err, authData) => {
+    jwt.verify(req.body.obj.token,process.env.JWT_KEY,(err, authData) => {
         if(err){ return res.status(404).json(err)}
         
     q = process.env.GET_EMAIL_BY_USER_ID
-    con.query(q,[req.body.pack.userid],(err,data)=>{
+    con.query(q,[req.body.obj.pack.userid],(err,data)=>{
         if(err) {return res.status(404).json(err)}
         if(data[0].email==authData.email){
             q=process.env.ADD_TO_BAG
-            const arr =[req.body.pack.userid, req.body.pack.productid, req.body.pack.idcolorforsize, req.body.pack.size]
+            const arr =[req.body.obj.pack.userid, req.body.obj.pack.productid, req.body.obj.pack.idcolorforsize, req.body.obj.pack.size]
             con.query(q,[arr],(err,data)=>{
                 if(err)return res.json(err)
                 return res.json(true)
