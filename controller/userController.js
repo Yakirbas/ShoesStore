@@ -23,9 +23,12 @@ login: (req,res) =>{
         const token = jwt.sign({email:data[0].email},process.env.JWT_KEY);
 
         const {password, ...other} = data[0];
-        return res.cookie(process.env.TOKEN_FOR_USER,token ,{
+      
+    /*     return res.cookie(process.env.TOKEN_FOR_USER,token ,{
             httpOnly:false
-        }).status(200).json(other);
+        }).status(200).json(other); */
+        return res.json({other,token})
+       
 
     })
 
@@ -105,8 +108,9 @@ exist:(req,res)=>{
 ,
 
 checktoken:(req,res,next)=>{
-
-    jwt.verify(req.body.access_token,process.env.JWT_KEY,(err, authData) => {
+    console.log(req.body.token)
+    jwt.verify(req.body.token,process.env.JWT_KEY,(err, authData) => {
+    
         if(err) return res.status(404).json(err)
       req.info=authData
      next()
@@ -130,7 +134,7 @@ checkiftokerexist:(req,res)=>{
 
 addtobag:(req,res)=>{
  let q = ""
-    jwt.verify(req.body.cookies.access_token,process.env.JWT_KEY,(err, authData) => {
+    jwt.verify(req.body.token,process.env.JWT_KEY,(err, authData) => {
         if(err) return res.status(404).json(err)
         
     q = process.env.GET_EMAIL_BY_USER_ID
@@ -232,7 +236,7 @@ var transporter = nodemailer.createTransport({
     from: process.env.EMAIL_OF_THE_WEB,
     to: `${data[0].email}`,
     subject: 'Reset your password',
-    text: `http://localhost:5173/reset-password/${data[0].id}/${token}`
+    text: `http://${process.env.VITE_SERVER}/reset-password/${data[0].id}/${token}`
   };
   
   transporter.sendMail(mailOptions, function(error, info){
