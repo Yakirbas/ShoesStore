@@ -136,11 +136,11 @@ addtobag:(req,res)=>{
     console.log(req.body)
  let q = ""
     jwt.verify(req.body.token,process.env.JWT_KEY,(err, authData) => {
-        if(err) return res.status(404).json(err)
+        if(err){ return res.status(404).json(err)}
         
     q = process.env.GET_EMAIL_BY_USER_ID
     con.query(q,[req.body.pack.userid],(err,data)=>{
-        if(err) return res.status(404).json(err)
+        if(err) {return res.status(404).json(err)}
         if(data[0].email==authData.email){
             q=process.env.ADD_TO_BAG
             const arr =[req.body.pack.userid, req.body.pack.productid, req.body.pack.idcolorforsize, req.body.pack.size]
