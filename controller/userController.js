@@ -133,6 +133,7 @@ checkiftokerexist:(req,res)=>{
 ,
 
 addtobag:(req,res)=>{
+    console.log(req.body)
  let q = ""
     jwt.verify(req.body.token,process.env.JWT_KEY,(err, authData) => {
         if(err) return res.status(404).json(err)
