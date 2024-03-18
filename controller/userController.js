@@ -65,7 +65,7 @@ register: (req,res,next)=>{
 
 createtokenforregistar: (req,res)=>{
 const q = process.env.GET_USER_BY_MAIL
-console.log(req.body)
+
 con.query(q,[req.body.email],(err,data)=>{
   
     if (err) return res.json(err)
@@ -74,9 +74,10 @@ con.query(q,[req.body.email],(err,data)=>{
     const token = jwt.sign({email:data[0].email},process.env.JWT_KEY);
 
         const {password, ...other} = data[0];
-        return res.cookie(process.env.TOKEN_FOR_USER,token ,{
+       /*  return res.cookie(process.env.TOKEN_FOR_USER,token ,{
             httpOnly:false
-        }).status(200).json(other);
+        }).status(200).json(other); */
+        return res.json({other,token})
 })
 
 }
@@ -133,14 +134,13 @@ checkiftokerexist:(req,res)=>{
 ,
 
 addtobag:(req,res)=>{
-    console.log(req.body)
  let q = ""
-    jwt.verify(req.body.obj.checktok,process.env.JWT_KEY,(err, authData) => {
-        if(err){ return res.status(404).json(err)}
+    jwt.verify(req.body.obj.token,process.env.JWT_KEY,(err, authData) => {
+        if(err) return res.status(404).json(err)
         
     q = process.env.GET_EMAIL_BY_USER_ID
     con.query(q,[req.body.obj.pack.userid],(err,data)=>{
-        if(err) {return res.status(404).json(err)}
+        if(err) return res.status(404).json(err)
         if(data[0].email==authData.email){
             q=process.env.ADD_TO_BAG
             const arr =[req.body.obj.pack.userid, req.body.obj.pack.productid, req.body.obj.pack.idcolorforsize, req.body.obj.pack.size]
@@ -290,7 +290,7 @@ resetpass:(req,res)=>{
 
 checkM:(req,res)=>{
     console.log(req.body)
-    jwt.verify(req.body.cookies.access_token,process.env.JWT_KEY,(err, authData) => {
+    jwt.verify(req.body.token,process.env.JWT_KEY,(err, authData) => {
         if(err) return res.status(404).json(err)
      
      const q = process.env.GET_USER_BY_MAIL
