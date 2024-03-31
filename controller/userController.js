@@ -109,7 +109,7 @@ exist:(req,res)=>{
 ,
 
 checktoken:(req,res,next)=>{
-    console.log(req.body.token)
+   
     jwt.verify(req.body.token,process.env.JWT_KEY,(err, authData) => {
     
         if(err) return res.status(404).json(err)
@@ -134,8 +134,9 @@ checkiftokerexist:(req,res)=>{
 ,
 
 addtobag:(req,res)=>{
+    
  let q = ""
-    jwt.verify(req.body.obj.token,process.env.JWT_KEY,(err, authData) => {
+    jwt.verify(req.body.obj.checktok,process.env.JWT_KEY,(err, authData) => {
         if(err) return res.status(404).json(err)
         
     q = process.env.GET_EMAIL_BY_USER_ID
@@ -256,7 +257,7 @@ var transporter = nodemailer.createTransport({
 
 resetpass:(req,res)=>{
     const {id,token} = req.params
-    console.log(req.body)
+   
     const {password} = req.body
 
     jwt.verify(token, process.env.JWT_KEY,(err,authData)=>{
@@ -274,7 +275,7 @@ resetpass:(req,res)=>{
         let arr = [hash, id]
         con.query(q,arr,(err,data)=>{
             if(err)return res.json(err)
-            console.log(data)
+           
             return res.json("Success")
         })
         })
@@ -289,7 +290,7 @@ resetpass:(req,res)=>{
 ,
 
 checkM:(req,res)=>{
-    console.log(req.body)
+   
     jwt.verify(req.body.token,process.env.JWT_KEY,(err, authData) => {
         if(err) return res.status(404).json(err)
      
@@ -297,7 +298,7 @@ checkM:(req,res)=>{
     con.query(q,[authData.email],(err,data)=>{
      if(err)return res.status(404).json(err)
      if(data.length != 1)return res.status(404).json(err)
-     console.log(data[0])
+    
      if(data[0].email==process.env.EMAIL_OF_THE_WEB_MANAGER&&data[0].id==req.body.user.id){
         return res.json("ok_to_process")
      }
